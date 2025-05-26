@@ -10,27 +10,16 @@ export const getMiddleware = (ctx: oak.Context) => {
     .setResponse({ message: "Unauthorized request." }, 401);
 };
 
-export const postMiddleware = async (ctx: oak.Context) => {
-  const apiKey = Deno.env.get("API_KEY");
-  const response = new Response(ctx);
-  const headers = { name: "Content-Type", value: "application/json" };
-  // const { MAINTAINER_EMAIL } = Deno.env.toObject();
+export const postRegisterMiddleware = async (ctx: oak.Context) => {
+  const { apiKey, response, headers } = getBasicElements(ctx);
 
   if (apiKey) {
-    const givenApiKey = ctx.request.url.searchParams.get("apiKey");
+    const { isOk, message } = verifyApiKey(ctx, apiKey);
 
-    if (!givenApiKey) {
+    if (!isOk) {
       return response
         .setHeaders(headers)
-        .setResponse({ message: "No api key given." }, 401);
-    }
-
-    const isAuthorized = givenApiKey === apiKey;
-
-    if (!isAuthorized) {
-      return response
-        .setHeaders(headers)
-        .setResponse({ message: "Api key is no correct." }, 401);
+        .setResponse({ message: message ?? "" }, 401);
     }
   }
 
@@ -65,6 +54,28 @@ export const postMiddleware = async (ctx: oak.Context) => {
     );
 };
 
+const verifyApiKey = (ctx: oak.Context, apiKey: string) => {
+  const givenApiKey = ctx.request.url.searchParams.get("apiKey");
+
+  if (!givenApiKey) {
+    return {
+      isOk: false,
+      message: "No api key given",
+    };
+  }
+
+  const isAuthorized = givenApiKey === apiKey;
+
+  if (!isAuthorized) {
+    return {
+      isOk: false,
+      message: "Api key is no correct.",
+    };
+  }
+
+  return { isOk: true };
+};
+
 const setRegisterContent = ({
   textContent,
   userFirstname,
@@ -77,6 +88,12 @@ const setRegisterContent = ({
   textContent
     .replace("{{ userFirstname }}", userFirstname)
     .replace("{{ userEmail }}", userEmail);
+
+const getBasicElements = (ctx: oak.Context) => ({
+  apiKey: Deno.env.get("API_KEY"),
+  response: new Response(ctx),
+  headers: { name: "Content-Type", value: "application/json" },
+});
 
 const getContent = (
   item: string,
