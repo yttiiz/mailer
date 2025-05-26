@@ -1,5 +1,5 @@
 import { oak } from "@deps";
-import { EmailContentType, Mailer, Response } from "@utils";
+import { EmailContentType, Helper, Mailer, Response } from "@utils";
 
 export const getMiddleware = (ctx: oak.Context) => {
   const response = new Response(ctx);
@@ -50,7 +50,7 @@ export const postMiddleware = async (ctx: oak.Context) => {
     },
   });
 
-    response
+  response
     .setHeaders(headers)
     .setResponse(
       { message: "Email envoyé" },

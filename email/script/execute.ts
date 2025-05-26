@@ -5,7 +5,9 @@ export async function createEmailTemplate(
   emailHtmlPath: string,
 ) {
   // 1. Retreive "email.json".
-  const baseEmailJson = await Helper.convertJsonToObject<EmailContentType>(emailJsonPath);
+  const baseEmailJson = await Helper.convertJsonToObject<EmailContentType>(
+    emailJsonPath,
+  );
 
   // 2. Replace previous "messageHtml" property content by "{{ emailHmtlContent }} mark."
   baseEmailJson.messageHtml = "{{ emailHtmlContent }}";
@@ -35,5 +37,5 @@ export async function createEmailTemplate(
 // run this command in CLI : deno run -A /server/email/script/execute.ts
 createEmailTemplate(
   "/email/register/email.json",
-  "/email/register/email.html"
+  "/email/register/email.html",
 );
