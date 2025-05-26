@@ -20,13 +20,27 @@ export async function createEmailTemplate(
   let emailHtml = await Helper.convertFileToString(emailHtmlPath);
   let emailJson = await Helper.convertFileToString(emailJsonPath);
 
+  const date = new Date();
+
   // 5. Replace whitespaces & double quote | Insert new content.
   emailHtml = emailHtml.replaceAll("\n", "\\n");
   emailHtml = emailHtml.replaceAll('"', '\\"');
   emailHtml = emailHtml.replace(
     "{{ currentYear }}",
-    new Date().getFullYear().toString(),
+    date.getFullYear().toString(),
   );
+
+  if (emailHtml.includes("{{ currentDate }}")) {
+    emailHtml = emailHtml.replace(
+      "{{ currentDate }}",
+      new Intl.DateTimeFormat("fr-FR", {
+        timeZone: "Europe/Paris",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }).format(date),
+    );
+  }
 
   emailJson = emailJson.replace("{{ emailHtmlContent }}", emailHtml);
 
@@ -34,8 +48,9 @@ export async function createEmailTemplate(
   await Deno.writeTextFile(Deno.cwd() + emailJsonPath, emailJson);
 }
 
-// run this command in CLI : deno run -A /server/email/script/execute.ts
-createEmailTemplate(
-  "/email/register/email.json",
-  "/email/register/email.html",
-);
+for (const item of ["register", "booking"]) {
+  createEmailTemplate(
+    `/email/${item}/email.json`,
+    `/email/${item}/email.html`,
+  );
+}

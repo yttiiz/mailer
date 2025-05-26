@@ -1,5 +1,11 @@
 import { oak } from "@deps";
 import { EmailContentType, Helper, Mailer, Response } from "@utils";
+import {
+  ResponseBookingJsonType,
+  ResponseRegisterJsonType,
+  SetBookingContentType,
+  SetRegisterContentType,
+} from "@services";
 
 export const getMiddleware = (ctx: oak.Context) => {
   const response = new Response(ctx);
@@ -23,7 +29,7 @@ export const postRegisterMiddleware = async (ctx: oak.Context) => {
     }
   }
 
-  const { email, firstname }: { email: string; firstname: string } = await ctx
+  const { email, firstname }: ResponseRegisterJsonType = await ctx
     .request.body.json();
   const { subject, messageHtml, messagePlainText } = await Helper
     .convertJsonToObject<EmailContentType>("/email/register/email.json");
@@ -54,6 +60,54 @@ export const postRegisterMiddleware = async (ctx: oak.Context) => {
     );
 };
 
+export const postBookingMiddleware = async (ctx: oak.Context) => {
+  const { apiKey, response, headers } = getBasicElements(ctx);
+
+  if (apiKey) {
+    const { isOk, message } = verifyApiKey(ctx, apiKey);
+
+    if (!isOk) {
+      return response
+        .setHeaders(headers)
+        .setResponse({ message: message ?? "" }, 401);
+    }
+  }
+
+  const { email, apartment, dates, firstname }: ResponseBookingJsonType =
+    await ctx
+      .request.body.json();
+
+  const { subject, messageHtml, messagePlainText } = await Helper
+    .convertJsonToObject<EmailContentType>("/email/booking/email.json");
+
+  // Send mail to user.
+  Mailer.send({
+    to: email,
+    emailContent: {
+      subject,
+      messageHtml: setBookingContent({
+        textContent: messageHtml,
+        userFirstname: firstname,
+        dates,
+        apartment,
+      }),
+      messagePlainText: setBookingContent({
+        textContent: messagePlainText,
+        userFirstname: firstname,
+        dates,
+        apartment,
+      }),
+    },
+  });
+
+  response
+    .setHeaders(headers)
+    .setResponse(
+      { message: "Réservation effectuée" },
+      200,
+    );
+};
+
 const verifyApiKey = (ctx: oak.Context, apiKey: string) => {
   const givenApiKey = ctx.request.url.searchParams.get("apiKey");
 
@@ -80,39 +134,26 @@ const setRegisterContent = ({
   textContent,
   userFirstname,
   userEmail,
-}: {
-  textContent: string;
-  userFirstname: string;
-  userEmail: string;
-}) =>
+}: SetRegisterContentType) =>
   textContent
     .replace("{{ userFirstname }}", userFirstname)
     .replace("{{ userEmail }}", userEmail);
+
+const setBookingContent = ({
+  textContent,
+  userFirstname,
+  dates,
+  apartment,
+}: SetBookingContentType) =>
+  textContent
+    .replace("{{ userFirstname }}", userFirstname)
+    .replace("{{ apartmentType }}", apartment.type)
+    .replace("{{ apartmentName }}", apartment.name)
+    .replace("{{ startingDate }}", dates.starting)
+    .replace("{{ endingDate }}", dates.ending);
 
 const getBasicElements = (ctx: oak.Context) => ({
   apiKey: Deno.env.get("API_KEY"),
   response: new Response(ctx),
   headers: { name: "Content-Type", value: "application/json" },
 });
-
-const getContent = (
-  item: string,
-  searchValue: string,
-  replaceValue: string,
-) =>
-  item.replace(
-    searchValue,
-    replaceValue,
-  );
-
-const getMaintainerMessage = (
-  message: string,
-  userEmail: string,
-  userMessage: string,
-) =>
-  message
-    .replace("{{ userEmail }}", userEmail)
-    .replace(
-      "{{ userMessage }}",
-      userMessage,
-    );

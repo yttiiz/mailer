@@ -21,6 +21,6 @@
     "singleQuote": false,
     "proseWrap": "preserve",
     "include": [""],
-    "exclude": ["README.md", "./data/email.html"]
+    "exclude": ["README.md", "./email/**/*.html"]
   }
 }
