@@ -14,7 +14,7 @@ export const postMiddleware = async (ctx: oak.Context) => {
   const apiKey = Deno.env.get("API_KEY");
   const response = new Response(ctx);
   const headers = { name: "Content-Type", value: "application/json" };
-  const { MAINTAINER_EMAIL } = Deno.env.toObject();
+  // const { MAINTAINER_EMAIL } = Deno.env.toObject();
 
   if (apiKey) {
     const givenApiKey = ctx.request.url.searchParams.get("apiKey");
@@ -34,19 +34,26 @@ export const postMiddleware = async (ctx: oak.Context) => {
     }
   }
 
-  const data: { email: string; receiver: string } = await ctx.request.body
-    .json();
-
-  // message content used to send to maintainer
-  const { email, receiver } = data;
+  const { email, firstname }: { email: string; firstname: string } = await ctx
+    .request.body.json();
+  const { subject, messageHtml, messagePlainText } = await Helper
+    .convertJsonToObject<EmailContentType>("/email/register/email.json");
 
   // Send mail to user.
   Mailer.send({
     to: email,
     emailContent: {
-      subject: "On the road",
-      messageHtml: "message html",
-      messagePlainText: "message plain text",
+      subject,
+      messageHtml: setRegisterContent({
+        textContent: messageHtml,
+        userFirstname: firstname,
+        userEmail: email,
+      }),
+      messagePlainText: setRegisterContent({
+        textContent: messagePlainText,
+        userFirstname: firstname,
+        userEmail: email,
+      }),
     },
   });
 
@@ -57,6 +64,19 @@ export const postMiddleware = async (ctx: oak.Context) => {
       200,
     );
 };
+
+const setRegisterContent = ({
+  textContent,
+  userFirstname,
+  userEmail,
+}: {
+  textContent: string;
+  userFirstname: string;
+  userEmail: string;
+}) =>
+  textContent
+    .replace("{{ userFirstname }}", userFirstname)
+    .replace("{{ userEmail }}", userEmail);
 
 const getContent = (
   item: string,

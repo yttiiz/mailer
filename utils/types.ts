@@ -23,6 +23,6 @@ export type SendParameterType = {
 
 export type EmailContentType = {
   subject: string;
-  messagePlainText?: string;
+  messagePlainText: string;
   messageHtml: string;
 };
