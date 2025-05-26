@@ -3,7 +3,9 @@
     "start": "deno -RWNSE --watch main.ts",
     "cache:reload": "deno cache --reload ./**/*.ts",
     "fmt": "deno fmt",
+    "load": "deno cache deps/deps.ts",
     "email-fmt": "deno -RWSE ./email/script/execute.ts && deno fmt",
+    "lint-fmt": "deno lint && deno fmt --check",
     "test": "deno test --no-check -A ./**/*.test.ts"
   },
   "imports": {

@@ -15,7 +15,7 @@ Deno.test({
   name: "Helper | convert file to string",
   async fn() {
     assertEquals(
-      "{\n  \"firstname\": \"Marcus\",\n  \"lastname\": \"Garvey\",\n  \"age\": 45\n}\n",
+      '{\n  "firstname": "Marcus",\n  "lastname": "Garvey",\n  "age": 45\n}\n',
       await Helper.convertFileToString("/tests/data/user.json"),
     );
   },
