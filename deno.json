@@ -1,9 +1,22 @@
 {
   "tasks": {
-    "dev": "deno run --watch main.ts"
+    "start": "deno -RWNSE --watch main.ts",
+    "cache:reload": "deno cache --reload ./**/*.ts",
+    "fmt": "deno fmt"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
-    "@deps": "./deps/deps.ts"
+    "@deps": "./deps/deps.ts",
+    "@utils": "./utils/mod.ts"
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": false,
+    "proseWrap": "preserve",
+    "include": [""],
+    "exclude": ["README.md", "./data/email.html"]
   }
 }
