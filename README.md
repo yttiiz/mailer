@@ -8,7 +8,7 @@ This application is an **api** designed to handle sending emails with `nodemaile
 - **Runtime** : [deno](https://deno.com/)
 - **Framework** : [oak](https://deno.land/x/oak)
 
-The application configuration is define in the `deno.json` file. You ned to set your environnement variable.
+The application configuration is define in the `deno.json` file. You need to set your environnement variable.
 
 ```
 PORT=3000
