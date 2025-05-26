@@ -40,15 +40,6 @@ export const postMiddleware = async (ctx: oak.Context) => {
   // message content used to send to maintainer
   const { email, receiver } = data;
 
-  console.log("email :", email);
-  
-  response
-    .setHeaders(headers)
-    .setResponse(
-      { message: "Email envoyé" },
-      200,
-    );
-
   // Send mail to user.
   Mailer.send({
     to: email,
@@ -58,6 +49,13 @@ export const postMiddleware = async (ctx: oak.Context) => {
       messagePlainText: "message plain text",
     },
   });
+
+    response
+    .setHeaders(headers)
+    .setResponse(
+      { message: "Email envoyé" },
+      200,
+    );
 };
 
 const getContent = (
