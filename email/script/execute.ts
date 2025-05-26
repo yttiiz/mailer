@@ -48,9 +48,11 @@ export async function createEmailTemplate(
   await Deno.writeTextFile(Deno.cwd() + emailJsonPath, emailJson);
 }
 
-for (const item of ["register", "booking"]) {
-  createEmailTemplate(
-    `/email/${item}/email.json`,
-    `/email/${item}/email.html`,
-  );
+for await (const { name } of Deno.readDir(Deno.cwd() + "/email")) {
+  if (name !== "script") {
+    createEmailTemplate(
+      `/email/${name}/email.json`,
+      `/email/${name}/email.html`,
+    );
+  }
 }
