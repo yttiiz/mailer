@@ -1,4 +1,5 @@
 import { EmailContentType, Helper } from "@utils";
+import { DateFormatter } from "@deps";
 
 export async function createEmailTemplate(
   emailJsonPath: string,
@@ -33,12 +34,7 @@ export async function createEmailTemplate(
   if (emailHtml.includes("{{ currentDate }}")) {
     emailHtml = emailHtml.replace(
       "{{ currentDate }}",
-      new Intl.DateTimeFormat("fr-FR", {
-        timeZone: "Europe/Paris",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }).format(date),
+      DateFormatter.display({ date, style: "normal" }),
     );
   }
 
