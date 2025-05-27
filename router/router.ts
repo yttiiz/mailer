@@ -2,8 +2,8 @@ import { oak } from "@deps";
 import {
   getMiddleware,
   postBookingMiddleware,
-  postRegisterMiddleware,
   postContactMiddleware,
+  postRegisterMiddleware,
 } from "@services";
 
 const { Router } = oak;

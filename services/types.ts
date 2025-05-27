@@ -25,7 +25,6 @@ export type ResponseBookingJsonType = ResponseRegisterJsonType & {
   dates: { starting: string; ending: string };
 };
 
-
 export type SetContactContentType = SetContentType & {
   userLastname: string;
   userEmail: string;
@@ -35,4 +34,4 @@ export type SetContactContentType = SetContentType & {
 export type ResponseContactJsonType = ResponseRegisterJsonType & {
   lastname: string;
   message: string;
-}
+};

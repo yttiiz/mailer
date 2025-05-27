@@ -126,7 +126,7 @@ export const postContactMiddleware = async (ctx: oak.Context) => {
   const { email, firstname, lastname, message }: ResponseContactJsonType =
     await ctx
       .request.body.json();
-  
+
   const { subject, messageHtml, messagePlainText } = await Helper
     .convertJsonToObject<EmailContentType>("/email/contact/email.json");
 
