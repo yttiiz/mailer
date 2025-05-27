@@ -24,3 +24,15 @@ export type ResponseBookingJsonType = ResponseRegisterJsonType & {
   apartment: { type: string; name: string };
   dates: { starting: string; ending: string };
 };
+
+
+export type SetContactContentType = SetContentType & {
+  userLastname: string;
+  userEmail: string;
+  userMessage: string;
+};
+
+export type ResponseContactJsonType = ResponseRegisterJsonType & {
+  lastname: string;
+  message: string;
+}

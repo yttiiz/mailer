@@ -2,8 +2,10 @@ import { DateFormatter, oak } from "@deps";
 import { EmailContentType, Helper, Mailer, Response } from "@utils";
 import {
   ResponseBookingJsonType,
+  ResponseContactJsonType,
   ResponseRegisterJsonType,
   SetBookingContentType,
+  SetContactContentType,
   SetRegisterContentType,
 } from "@services";
 
@@ -108,6 +110,56 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
     );
 };
 
+export const postContactMiddleware = async (ctx: oak.Context) => {
+  const { apiKey, response, headers } = getBasicElements(ctx);
+
+  if (apiKey) {
+    const { isOk, message } = verifyApiKey(ctx, apiKey);
+
+    if (!isOk) {
+      return response
+        .setHeaders(headers)
+        .setResponse({ message: message ?? "" }, 401);
+    }
+  }
+
+  const { email, firstname, lastname, message }: ResponseContactJsonType =
+    await ctx
+      .request.body.json();
+  
+  const { subject, messageHtml, messagePlainText } = await Helper
+    .convertJsonToObject<EmailContentType>("/email/contact/email.json");
+
+  // Send mail to user.
+  Mailer.send({
+    to: email,
+    emailContent: {
+      subject,
+      messageHtml: setContactContent({
+        textContent: messageHtml,
+        userFirstname: firstname,
+        userLastname: lastname,
+        userEmail: email,
+        userMessage: message,
+      }),
+      messagePlainText: setContactContent({
+        textContent: messagePlainText,
+        userFirstname: firstname,
+        userLastname: lastname,
+        userEmail: email,
+        userMessage: message,
+      }),
+    },
+  });
+
+  response
+    .setHeaders(headers)
+    .setResponse(
+      { message: "Message bien reçu." },
+      200,
+    );
+};
+
 const verifyApiKey = (ctx: oak.Context, apiKey: string) => {
   const givenApiKey = ctx.request.url.searchParams.get("apiKey");
 
@@ -155,6 +207,19 @@ const setBookingContent = ({
       "{{ currentDate }}",
       DateFormatter.display({ date: new Date(), style: "normal" }),
     );
+
+const setContactContent = ({
+  textContent,
+  userFirstname,
+  userLastname,
+  userEmail,
+  userMessage,
+}: SetContactContentType) =>
+  textContent
+    .replace("{{ userFirstname }}", userFirstname)
+    .replace("{{ userLastname }}", userLastname)
+    .replace("{{ userEmail }}", userEmail)
+    .replace("{{ userMessage }}", userMessage);
 
 const getBasicElements = (ctx: oak.Context) => ({
   apiKey: Deno.env.get("API_KEY"),
