@@ -4,6 +4,7 @@
     "cache:reload": "deno cache --reload ./**/*.ts",
     "fmt": "deno fmt",
     "container": "docker desktop start && cd docker && make up",
+    "container-server": "cd docker && make up",
     "load": "deno cache deps/deps.ts",
     "email-fmt": "deno -RWSE ./email/script/execute.ts && deno fmt",
     "lint-fmt": "deno lint && deno fmt --check",
