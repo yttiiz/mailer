@@ -1,5 +1,4 @@
 import { EmailContentType, Helper } from "@utils";
-import { DateFormatter } from "@deps";
 
 export async function createEmailTemplate(
   emailJsonPath: string,
@@ -21,22 +20,13 @@ export async function createEmailTemplate(
   let emailHtml = await Helper.convertFileToString(emailHtmlPath);
   let emailJson = await Helper.convertFileToString(emailJsonPath);
 
-  const date = new Date();
-
   // 5. Replace whitespaces & double quote | Insert new content.
   emailHtml = emailHtml.replaceAll("\n", "\\n");
   emailHtml = emailHtml.replaceAll('"', '\\"');
   emailHtml = emailHtml.replace(
     "{{ currentYear }}",
-    date.getFullYear().toString(),
+    new Date().getFullYear().toString(),
   );
-
-  if (emailHtml.includes("{{ currentDate }}")) {
-    emailHtml = emailHtml.replace(
-      "{{ currentDate }}",
-      DateFormatter.display({ date, style: "normal" }),
-    );
-  }
 
   emailJson = emailJson.replace("{{ emailHtmlContent }}", emailHtml);
 

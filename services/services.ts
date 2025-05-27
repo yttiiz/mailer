@@ -1,4 +1,4 @@
-import { oak } from "@deps";
+import { DateFormatter, oak } from "@deps";
 import { EmailContentType, Helper, Mailer, Response } from "@utils";
 import {
   ResponseBookingJsonType,
@@ -150,7 +150,11 @@ const setBookingContent = ({
     .replace("{{ apartmentType }}", apartment.type)
     .replace("{{ apartmentName }}", apartment.name)
     .replace("{{ startingDate }}", dates.starting)
-    .replace("{{ endingDate }}", dates.ending);
+    .replace("{{ endingDate }}", dates.ending)
+    .replace(
+      "{{ currentDate }}",
+      DateFormatter.display({ date: new Date(), style: "normal" }),
+    );
 
 const getBasicElements = (ctx: oak.Context) => ({
   apiKey: Deno.env.get("API_KEY"),
