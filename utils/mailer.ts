@@ -8,7 +8,9 @@ export class Mailer {
     secure: true,
   };
 
-  public static async send({ to, emailContent }: SendParameterType) {
+  public static async send(
+    { to, emailContent, isForAdmin = false }: SendParameterType,
+  ) {
     const { createTransport } = nodemailer;
     const {
       ADMIN_EMAIL: email,
@@ -29,7 +31,7 @@ export class Mailer {
     const { subject, messagePlainText, messageHtml } = emailContent;
     const _ = await transporter.sendMail({
       from: `${username} <${email}>`,
-      to,
+      to: isForAdmin ? email : to,
       subject,
       text: messagePlainText,
       html: messageHtml,

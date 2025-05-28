@@ -18,7 +18,7 @@ export type MailConfigType = {
 export type SendParameterType = {
   to: string;
   emailContent: EmailContentType;
-  needToWriteLog?: boolean;
+  isForAdmin?: boolean;
 };
 
 export type EmailContentType = {

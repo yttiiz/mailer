@@ -150,6 +150,7 @@ export const postContactMiddleware = async (ctx: oak.Context) => {
         userMessage: message,
       }),
     },
+    isForAdmin: true,
   });
 
   response
