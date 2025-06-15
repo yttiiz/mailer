@@ -112,7 +112,7 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
 
   // Send mail to admin.
   Mailer.send({
-    to: email,
+    to: Deno.env.get("ADMIN_EMAIL") as string,
     emailContent: {
       subject: adminSubject,
       messageHtml: setAdminContent({
