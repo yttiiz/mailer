@@ -23,6 +23,9 @@ export type SetBookingContentType = SetContentType & {
 export type ResponseBookingJsonType = ResponseRegisterJsonType & {
   apartment: { type: string; name: string };
   dates: { starting: string; ending: string };
+  fullname: string;
+  price: number;
+  numberOfDays: number;
 };
 
 export type SetContactContentType = SetContentType & {
@@ -34,4 +37,13 @@ export type SetContactContentType = SetContentType & {
 export type ResponseContactJsonType = ResponseRegisterJsonType & {
   lastname: string;
   message: string;
+};
+
+export type SetAdminContentType = {
+  textContent: string;
+  userFullname: string;
+  apartment: string;
+  price: number;
+  dates: { starting: string; ending: string };
+  amount: number;
 };

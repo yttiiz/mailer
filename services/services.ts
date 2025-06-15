@@ -4,6 +4,7 @@ import {
   ResponseBookingJsonType,
   ResponseContactJsonType,
   ResponseRegisterJsonType,
+  SetAdminContentType,
   SetBookingContentType,
   SetContactContentType,
   SetRegisterContentType,
@@ -75,8 +76,8 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
     }
   }
 
-  const { email, apartment, dates, firstname }: ResponseBookingJsonType =
-    await ctx
+  const { email, apartment, dates, firstname, fullname, price, numberOfDays }:
+    ResponseBookingJsonType = await ctx
       .request.body.json();
 
   const { subject, messageHtml, messagePlainText } = await Helper
@@ -98,6 +99,37 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
         userFirstname: firstname,
         dates,
         apartment,
+      }),
+    },
+  });
+
+  const {
+    subject: adminSubject,
+    messageHtml: adminMsgHtml,
+    messagePlainText: adminMsgPlainText,
+  } = await Helper
+    .convertJsonToObject<EmailContentType>("/email/admin-booking/email.json");
+
+  // Send mail to admin.
+  Mailer.send({
+    to: email,
+    emailContent: {
+      subject: adminSubject,
+      messageHtml: setAdminContent({
+        textContent: adminMsgHtml,
+        userFullname: fullname,
+        dates,
+        apartment: apartment.name,
+        amount: price * numberOfDays,
+        price,
+      }),
+      messagePlainText: setAdminContent({
+        textContent: adminMsgPlainText,
+        userFullname: fullname,
+        dates,
+        apartment: apartment.name,
+        amount: price * numberOfDays,
+        price,
       }),
     },
   });
@@ -221,6 +253,22 @@ const setContactContent = ({
     .replace("{{ userLastname }}", userLastname)
     .replace("{{ userEmail }}", userEmail)
     .replace("{{ userMessage }}", userMessage);
+
+const setAdminContent = ({
+  textContent,
+  userFullname,
+  apartment,
+  price,
+  amount,
+  dates,
+}: SetAdminContentType) =>
+  textContent
+    .replace("{{ userFullname }}", userFullname)
+    .replace("{{ apartmentChosen }}", apartment)
+    .replace("{{ userStartingDate }}", dates.starting)
+    .replace("{{ userEndingDate }}", dates.ending)
+    .replace("{{ pricing }}", price.toString())
+    .replace("{{ amount }}", amount.toString());
 
 const getBasicElements = (ctx: oak.Context) => ({
   apiKey: Deno.env.get("API_KEY"),
