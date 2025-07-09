@@ -9,12 +9,6 @@ export type ContentHeadersType = {
 export type ContextType<T extends string> = oak.RouterContext<T> | oak.Context;
 
 // Mailer types
-export type MailConfigType = {
-  host: string;
-  port: number;
-  secure: boolean;
-};
-
 export type SendParameterType = {
   to: string;
   emailContent: EmailContentType;

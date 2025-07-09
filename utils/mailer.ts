@@ -1,13 +1,7 @@
 import { nodemailer } from "@deps";
-import { MailConfigType, SendParameterType } from "@utils";
+import { SendParameterType } from "@utils";
 
 export class Mailer {
-  private static HOSTINGER_CONFIG: MailConfigType = {
-    host: "smtp.hostinger.com",
-    port: 465,
-    secure: true,
-  };
-
   public static async send(
     { to, emailContent, isForAdmin = false }: SendParameterType,
   ) {
@@ -16,12 +10,17 @@ export class Mailer {
       ADMIN_EMAIL: email,
       ADMIN_USERNAME: username,
       ADMIN_PASSWORD: password,
+      EMAIL_HOST_CONFIG: host,
+      EMAIL_PORT_CONFIG: port,
+      EMAIL_SERVICE_CONFIG: service,
+      EMAIL_SECURE_CONFIG: secure,
     } = Deno.env.toObject();
 
     const transporter = createTransport({
-      host: Mailer.HOSTINGER_CONFIG.host,
-      port: Mailer.HOSTINGER_CONFIG.port,
-      secure: Mailer.HOSTINGER_CONFIG.secure,
+      service,
+      host,
+      port,
+      secure,
       auth: {
         user: email,
         pass: password,
