@@ -42,6 +42,7 @@ export type ResponseContactJsonType = ResponseRegisterJsonType & {
 export type SetAdminContentType = {
   textContent: string;
   userFullname: string;
+  userEmail: string;
   apartment: string;
   price: number;
   dates: { starting: string; ending: string };

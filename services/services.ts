@@ -118,6 +118,7 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
       messageHtml: setAdminContent({
         textContent: adminMsgHtml,
         userFullname: fullname,
+        userEmail: email,
         dates,
         apartment: apartment.name,
         amount: price * numberOfDays,
@@ -126,6 +127,7 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
       messagePlainText: setAdminContent({
         textContent: adminMsgPlainText,
         userFullname: fullname,
+        userEmail: email,
         dates,
         apartment: apartment.name,
         amount: price * numberOfDays,
@@ -257,6 +259,7 @@ const setContactContent = ({
 const setAdminContent = ({
   textContent,
   userFullname,
+  userEmail,
   apartment,
   price,
   amount,
@@ -264,6 +267,7 @@ const setAdminContent = ({
 }: SetAdminContentType) =>
   textContent
     .replace("{{ userFullname }}", userFullname)
+    .replace("{{ userEmail }}", userEmail)
     .replace("{{ apartmentChosen }}", apartment)
     .replace("{{ userStartingDate }}", dates.starting)
     .replace("{{ userEndingDate }}", dates.ending)
