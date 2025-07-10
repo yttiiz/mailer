@@ -1,5 +1,5 @@
 COMPOSE=docker compose
-API_CONTAINER=les_flamboyants
+API_CONTAINER=lf-mailer
 PROJECT_NAME=lf_mailer
 BAKE=COMPOSE_BAKE=true # Use once with 'up' command
 
