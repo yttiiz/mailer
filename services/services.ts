@@ -7,6 +7,7 @@ import {
   SetAdminContentType,
   SetBookingContentType,
   SetContactContentType,
+  SetForgotPasswordContentType,
   SetRegisterContentType,
 } from "@services";
 
@@ -198,7 +199,6 @@ export const postContactMiddleware = async (ctx: oak.Context) => {
 export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
   const { apiKey, response, headers } = getBasicElements(ctx);
 
-
   if (apiKey) {
     const { isOk, message } = verifyApiKey(ctx, apiKey);
 
@@ -209,21 +209,29 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
     }
   }
 
-  const { email }: { email: string } = await ctx.request.body.json();
+  const { email, firstname }: ResponseRegisterJsonType = await ctx.request.body.json();
 
   const newPassword = Crypto.generatePassword();
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/contact/email.json");
+    .convertJsonToObject<EmailContentType>("/email/forgot-password/email.json");
 
   // Send mail to user.
   Mailer.send({
     to: email,
     emailContent: {
       subject,
-      messageHtml: "WIP",
-      messagePlainText: "WIP",
-    }
-  })
+      messageHtml: setForgotPasswordContent({
+        textContent: messageHtml,
+        userFirstname: firstname,
+        userNewPassword: newPassword,
+      }),
+      messagePlainText: setForgotPasswordContent({
+        textContent: messagePlainText,
+        userFirstname: firstname,
+        userNewPassword: newPassword,
+      }),
+    },
+  });
 
   response
     .setHeaders(headers)
@@ -232,8 +240,8 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
         message: "Message envoyé.",
         newPassword,
       },
-       200,
-    )
+      200,
+    );
 };
 
 const verifyApiKey = (ctx: oak.Context, apiKey: string) => {
@@ -296,6 +304,15 @@ const setContactContent = ({
     .replace("{{ userLastname }}", userLastname)
     .replace("{{ userEmail }}", userEmail)
     .replace("{{ userMessage }}", userMessage);
+
+const setForgotPasswordContent = ({
+  textContent,
+  userFirstname,
+  userNewPassword,
+}: SetForgotPasswordContentType) =>
+  textContent
+    .replace("{{ userFirstname }}", userFirstname)
+    .replace("{{ userNewPassword }}", userNewPassword);
 
 const setAdminContent = ({
   textContent,
