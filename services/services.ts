@@ -1,5 +1,5 @@
 import { DateFormatter, oak } from "@deps";
-import { EmailContentType, Helper, Mailer, Response } from "@utils";
+import { Crypto, EmailContentType, Helper, Mailer, Response } from "@utils";
 import {
   ResponseBookingJsonType,
   ResponseContactJsonType,
@@ -193,6 +193,47 @@ export const postContactMiddleware = async (ctx: oak.Context) => {
       { message: "Message bien reçu." },
       200,
     );
+};
+
+export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
+  const { apiKey, response, headers } = getBasicElements(ctx);
+
+
+  if (apiKey) {
+    const { isOk, message } = verifyApiKey(ctx, apiKey);
+
+    if (!isOk) {
+      return response
+        .setHeaders(headers)
+        .setResponse({ message: message ?? "" }, 401);
+    }
+  }
+
+  const { email }: { email: string } = await ctx.request.body.json();
+
+  const newPassword = Crypto.generatePassword();
+  const { subject, messageHtml, messagePlainText } = await Helper
+    .convertJsonToObject<EmailContentType>("/email/contact/email.json");
+
+  // Send mail to user.
+  Mailer.send({
+    to: email,
+    emailContent: {
+      subject,
+      messageHtml: "WIP",
+      messagePlainText: "WIP",
+    }
+  })
+
+  response
+    .setHeaders(headers)
+    .setResponse(
+      {
+        message: "Message envoyé.",
+        newPassword,
+      },
+       200,
+    )
 };
 
 const verifyApiKey = (ctx: oak.Context, apiKey: string) => {
