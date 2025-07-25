@@ -34,6 +34,10 @@ export type SetContactContentType = SetContentType & {
   userMessage: string;
 };
 
+export type SetForgotPasswordContentType = SetContentType & {
+  userNewPassword: string;
+};
+
 export type ResponseContactJsonType = ResponseRegisterJsonType & {
   lastname: string;
   message: string;
