@@ -238,7 +238,6 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
     .setHeaders(headers)
     .setResponse(
       {
-        message: "Message envoyé.",
         newPassword,
       },
       200,
