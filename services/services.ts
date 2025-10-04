@@ -3,11 +3,14 @@ import { Crypto, EmailContentType, Helper, Mailer, Response } from "@utils";
 import {
   ResponseBookingJsonType,
   ResponseContactJsonType,
+  ResponseForgotPasswordJsonType,
+  ResponseForgotPasswordTokenJsonType,
   ResponseRegisterJsonType,
   SetAdminContentType,
   SetBookingContentType,
   SetContactContentType,
   SetForgotPasswordContentType,
+  SetForgotPasswordTokenContentType,
   SetRegisterContentType,
 } from "@services";
 
@@ -209,7 +212,8 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
     }
   }
 
-  const { email, firstname }: ResponseRegisterJsonType = await ctx.request.body
+  const { email, firstname }: ResponseForgotPasswordJsonType = await ctx.request
+    .body
     .json();
 
   const newPassword = Crypto.generatePassword();
@@ -239,6 +243,58 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
     .setResponse(
       {
         newPassword,
+      },
+      200,
+    );
+};
+
+export const postForgotPasswordTokenMiddleware = async (ctx: oak.Context) => {
+  const { apiKey, response, headers } = getBasicElements(ctx);
+
+  if (apiKey) {
+    const { isOk, message } = verifyApiKey(ctx, apiKey);
+
+    if (!isOk) {
+      return response
+        .setHeaders(headers)
+        .setResponse({ message: message ?? "" }, 401);
+    }
+  }
+
+  const { email, firstname, token, url }: ResponseForgotPasswordTokenJsonType =
+    await ctx.request.body
+      .json();
+
+  const { subject, messageHtml, messagePlainText } = await Helper
+    .convertJsonToObject<EmailContentType>(
+      "/email/forgot-password-token/email.json",
+    );
+
+  // Send mail to user.
+  Mailer.send({
+    to: email,
+    emailContent: {
+      subject,
+      messageHtml: setForgotPasswordTokenContent({
+        textContent: messageHtml,
+        userFirstname: firstname,
+        url,
+        token,
+      }),
+      messagePlainText: setForgotPasswordTokenContent({
+        textContent: messagePlainText,
+        userFirstname: firstname,
+        url,
+        token,
+      }),
+    },
+  });
+
+  response
+    .setHeaders(headers)
+    .setResponse(
+      {
+        message: "Message envoyé",
       },
       200,
     );
@@ -313,6 +369,17 @@ const setForgotPasswordContent = ({
   textContent
     .replace("{{ userFirstname }}", userFirstname)
     .replace("{{ userNewPassword }}", userNewPassword);
+
+const setForgotPasswordTokenContent = ({
+  textContent,
+  userFirstname,
+  url,
+  token,
+}: SetForgotPasswordTokenContentType) =>
+  textContent
+    .replace("{{ userFirstname }}", userFirstname)
+    .replace("{{ url }}", url)
+    .replace("{{ token }}", token);
 
 const setAdminContent = ({
   textContent,

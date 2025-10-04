@@ -9,6 +9,13 @@ export type SetRegisterContentType = SetContentType & {
 
 export type ResponseRegisterJsonType = { email: string; firstname: string };
 
+export type ResponseForgotPasswordJsonType = ResponseRegisterJsonType;
+
+export type ResponseForgotPasswordTokenJsonType = ResponseRegisterJsonType & {
+  token: string;
+  url: string;
+};
+
 export type SetBookingContentType = SetContentType & {
   dates: {
     starting: string;
@@ -36,6 +43,11 @@ export type SetContactContentType = SetContentType & {
 
 export type SetForgotPasswordContentType = SetContentType & {
   userNewPassword: string;
+};
+
+export type SetForgotPasswordTokenContentType = SetContentType & {
+  url: string;
+  token: string;
 };
 
 export type ResponseContactJsonType = ResponseRegisterJsonType & {
