@@ -378,7 +378,7 @@ const setForgotPasswordTokenContent = ({
 }: SetForgotPasswordTokenContentType) =>
   textContent
     .replace("{{ userFirstname }}", userFirstname)
-    .replace("{{ url }}", url)
+    .replaceAll("{{ url }}", url)
     .replace("{{ token }}", token);
 
 const setAdminContent = ({
