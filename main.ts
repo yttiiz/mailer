@@ -2,7 +2,6 @@ import { oak, oakCors } from "@deps";
 import { Env } from "@utils";
 import { router } from "@router";
 
-// Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
 if (import.meta.main) {
   const { Application } = oak;
 
