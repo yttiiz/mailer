@@ -12,7 +12,7 @@ import {
   SetForgotPasswordContentType,
   SetForgotPasswordTokenContentType,
   SetRegisterContentType,
-} from "@services";
+} from "./mod.ts";
 
 export const getMiddleware = (ctx: oak.Context) => {
   const response = new Response(ctx);

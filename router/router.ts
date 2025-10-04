@@ -6,7 +6,7 @@ import {
   postForgotPasswordMiddleware,
   postForgotPasswordTokenMiddleware,
   postRegisterMiddleware,
-} from "@services";
+} from "../services/mod.ts";
 
 const { Router } = oak;
 
