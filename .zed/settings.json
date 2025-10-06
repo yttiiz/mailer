@@ -4,5 +4,5 @@
       "name": "deno"
     }
   },
-  "language_servers": ["deno"]
+  "language_servers": ["deno", "emmet-language-server"]
 }
