@@ -3,7 +3,7 @@ import { SendParameterType } from "@utils";
 
 export class Mailer {
   public static async send(
-    { to, emailContent, isForAdmin = false }: SendParameterType,
+    { to, emailContent }: SendParameterType,
   ) {
     const { createTransport } = nodemailer;
     const {
@@ -30,7 +30,7 @@ export class Mailer {
     const { subject, messagePlainText, messageHtml } = emailContent;
     const _ = await transporter.sendMail({
       from: `${username} <${email}>`,
-      to: isForAdmin ? email : to,
+      to,
       subject,
       text: messagePlainText,
       html: messageHtml,
