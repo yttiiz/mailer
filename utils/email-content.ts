@@ -1,7 +1,7 @@
 import {
   Response,
+  SetAdminBookingContentType,
   SetAdminContactContentType,
-  SetAdminContentType,
   SetBookingContentType,
   SetContactContentType,
   SetForgotPasswordContentType,
@@ -46,6 +46,10 @@ export const setBookingContent = ({
   userFirstname,
   dates,
   apartment,
+  price,
+  amount,
+  numberOfDays,
+  desposit,
 }: SetBookingContentType) =>
   textContent
     .replace("{{ userFirstname }}", userFirstname)
@@ -53,6 +57,10 @@ export const setBookingContent = ({
     .replace("{{ apartmentName }}", apartment.name)
     .replace("{{ startingDate }}", dates.starting)
     .replace("{{ endingDate }}", dates.ending)
+    .replace("{{ numberOfDays }}", numberOfDays.toString())
+    .replaceAll("{{ pricing }}", price.toString())
+    .replace("{{ amount }}", amount.toString())
+    .replace("{{ desposit }}", desposit.toString())
     .replace(
       "{{ currentDate }}",
       DateFormatter.display({ date: new Date(), style: "normal" }),
@@ -100,7 +108,7 @@ export const setForgotPasswordTokenContent = ({
     .replaceAll("{{ url }}", url)
     .replace("{{ token }}", token);
 
-export const setAdminContent = ({
+export const setAdminBookingContent = ({
   textContent,
   userFullname,
   userEmail,
@@ -108,7 +116,7 @@ export const setAdminContent = ({
   price,
   amount,
   dates,
-}: SetAdminContentType) =>
+}: SetAdminBookingContentType) =>
   textContent
     .replace("{{ userFullname }}", userFullname)
     .replace("{{ userEmail }}", userEmail)

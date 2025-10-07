@@ -58,9 +58,13 @@ export type SetBookingContentType = SetContentType & {
     type: string;
     name: string;
   };
+  price: number;
+  amount: number;
+  desposit: number;
+  numberOfDays: number;
 };
 
-export type SetAdminContentType = {
+export type SetAdminBookingContentType = {
   textContent: string;
   userFullname: string;
   userEmail: string;

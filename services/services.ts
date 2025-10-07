@@ -6,8 +6,8 @@ import {
   Helper,
   Mailer,
   Response,
+  setAdminBookingContent,
   setAdminContactContent,
-  setAdminContent,
   setBookingContent,
   setContactContent,
   setForgotPasswordContent,
@@ -96,6 +96,9 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
   const { subject, messageHtml, messagePlainText } = await Helper
     .convertJsonToObject<EmailContentType>("/email/booking/email.json");
 
+  const amount = price * numberOfDays;
+  const desposit = (amount / 100) * 30;
+
   // Send mail to user.
   Mailer.send({
     to: email,
@@ -106,12 +109,20 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
         userFirstname: firstname,
         dates,
         apartment,
+        price,
+        numberOfDays,
+        amount,
+        desposit,
       }),
       messagePlainText: setBookingContent({
         textContent: messagePlainText,
         userFirstname: firstname,
         dates,
         apartment,
+        price,
+        numberOfDays,
+        amount,
+        desposit,
       }),
     },
   });
@@ -128,22 +139,22 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
     to: Deno.env.get("ADMIN_EMAIL") as string,
     emailContent: {
       subject: adminSubject,
-      messageHtml: setAdminContent({
+      messageHtml: setAdminBookingContent({
         textContent: adminMsgHtml,
         userFullname: fullname,
         userEmail: email,
         dates,
         apartment: apartment.name,
-        amount: price * numberOfDays,
+        amount,
         price,
       }),
-      messagePlainText: setAdminContent({
+      messagePlainText: setAdminBookingContent({
         textContent: adminMsgPlainText,
         userFullname: fullname,
         userEmail: email,
         dates,
         apartment: apartment.name,
-        amount: price * numberOfDays,
+        amount,
         price,
       }),
     },
