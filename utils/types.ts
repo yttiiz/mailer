@@ -21,7 +21,6 @@ export type SetRegisterContentType = SetContentType & {
 export type SendParameterType = {
   to: string;
   emailContent: EmailContentType;
-  isForAdmin?: boolean;
 };
 
 export type EmailContentType = {
