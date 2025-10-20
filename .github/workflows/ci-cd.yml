@@ -38,3 +38,19 @@ jobs:
 
       - name: Run tests
         run: deno task test
+        
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            git pull
+            cd docker
+            make rmi && make up
+            docker ps
