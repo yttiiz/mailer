@@ -10,5 +10,4 @@ services:
       - ${PORT}:${PORT}
     volumes:
       - ${APP_PATH}:/app
-    network_mode: host
     command: deno task start
