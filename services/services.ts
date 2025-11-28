@@ -9,6 +9,7 @@ import {
   setAdminBookingContent,
   setAdminContactContent,
   setBookingContent,
+  setBookingUpdateContent,
   setContactContent,
   setForgotPasswordContent,
   setForgotPasswordTokenContent,
@@ -164,6 +165,62 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
     .setHeaders(headers)
     .setResponse(
       { message: "Réservation effectuée" },
+      200,
+    );
+};
+
+export const postBookingUpdateMiddleware = async (ctx: oak.Context) => {
+  const { apiKey, response, headers } = getBasicElements(ctx);
+
+  if (apiKey) {
+    const { isOk, message } = verifyApiKey(ctx, apiKey);
+
+    if (!isOk) {
+      return response
+        .setHeaders(headers)
+        .setResponse({ message: message ?? "" }, 401);
+    }
+  }
+
+  const { email, apartment, dates, firstname, price, numberOfDays }:
+    ResponseBookingJsonType = await ctx
+      .request.body.json();
+
+  const { subject, messageHtml, messagePlainText } = await Helper
+    .convertJsonToObject<EmailContentType>("/email/booking-update/email.json");
+
+  const amount = price * numberOfDays;
+
+  // Send mail to user.
+  Mailer.send({
+    to: email,
+    emailContent: {
+      subject,
+      messageHtml: setBookingUpdateContent({
+        textContent: messageHtml,
+        userFirstname: firstname,
+        dates,
+        apartment,
+        price,
+        numberOfDays,
+        amount,
+      }),
+      messagePlainText: setBookingUpdateContent({
+        textContent: messagePlainText,
+        userFirstname: firstname,
+        dates,
+        apartment,
+        price,
+        numberOfDays,
+        amount,
+      }),
+    },
+  });
+
+  response
+    .setHeaders(headers)
+    .setResponse(
+      { message: "Réservation modifiée" },
       200,
     );
 };
