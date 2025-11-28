@@ -3,6 +3,7 @@ import {
   SetAdminBookingContentType,
   SetAdminContactContentType,
   SetBookingContentType,
+  SetBookingUpdateContentType,
   SetContactContentType,
   SetForgotPasswordContentType,
   SetForgotPasswordTokenContentType,
@@ -61,6 +62,29 @@ export const setBookingContent = ({
     .replaceAll("{{ pricing }}", price.toString())
     .replace("{{ amount }}", amount.toString())
     .replace("{{ desposit }}", desposit.toString())
+    .replace(
+      "{{ currentDate }}",
+      DateFormatter.display({ date: new Date(), style: "normal" }),
+    );
+
+export const setBookingUpdateContent = ({
+  textContent,
+  userFirstname,
+  dates,
+  apartment,
+  price,
+  amount,
+  numberOfDays,
+}: SetBookingUpdateContentType) =>
+  textContent
+    .replace("{{ userFirstname }}", userFirstname)
+    .replace("{{ apartmentType }}", apartment.type)
+    .replace("{{ apartmentName }}", apartment.name)
+    .replace("{{ startingDate }}", dates.starting)
+    .replace("{{ endingDate }}", dates.ending)
+    .replace("{{ numberOfDays }}", numberOfDays.toString())
+    .replaceAll("{{ pricing }}", price.toString())
+    .replace("{{ amount }}", amount.toString())
     .replace(
       "{{ currentDate }}",
       DateFormatter.display({ date: new Date(), style: "normal" }),
