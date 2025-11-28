@@ -63,7 +63,10 @@ export type SetBookingContentType = SetContentType & {
   numberOfDays: number;
 };
 
-export type SetBookingUpdateContentType = Omit<SetBookingContentType, "desposit">;
+export type SetBookingUpdateContentType = Omit<
+  SetBookingContentType,
+  "desposit"
+>;
 
 export type SetAdminBookingContentType = {
   textContent: string;
