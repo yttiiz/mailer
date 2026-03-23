@@ -6,6 +6,7 @@ services:
     build:
       context: ${APP_PATH}
       dockerfile: ${APP_PATH}/docker/Dockerfile
+    pull_policy: build
     ports:
       - ${PORT}:${PORT}
     volumes:
