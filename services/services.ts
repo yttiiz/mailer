@@ -319,7 +319,9 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
 
   const newPassword = Crypto.generatePassword();
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/emails/forgot-password/email.json");
+    .convertJsonToObject<EmailContentType>(
+      "/emails/forgot-password/email.json",
+    );
 
   // Send mail to user.
   Mailer.send({
