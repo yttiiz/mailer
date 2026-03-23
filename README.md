@@ -1,5 +1,8 @@
 # ![logo](./mailer.png) Mailer
 
+[![release](https://img.shields.io/github/actions/workflow/status/yttiiz/mailer/ci-cd.yml?label=ci/cd)](https://github.com/yttiiz/mailer/actions/workflows/ci-cd.yml)
+[![release](https://img.shields.io/github/v/release/yttiiz/mailer?color=blue)](https://github.com/yttiiz/mailer/releases)
+
 This application is an **api** designed to handle sending emails with `nodemailer`.
 
 ### Specifications
