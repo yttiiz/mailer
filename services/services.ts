@@ -49,7 +49,7 @@ export const postRegisterMiddleware = async (ctx: oak.Context) => {
   const { email, firstname }: ResponseRegisterJsonType = await ctx
     .request.body.json();
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/register/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/register/email.json");
 
   // Send mail to user.
   Mailer.send({
@@ -95,7 +95,7 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
       .request.body.json();
 
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/booking/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/booking/email.json");
 
   const amount = price * numberOfDays;
   const desposit = (amount / 100) * 30;
@@ -133,7 +133,7 @@ export const postBookingMiddleware = async (ctx: oak.Context) => {
     messageHtml: adminMsgHtml,
     messagePlainText: adminMsgPlainText,
   } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/admin-booking/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/admin-booking/email.json");
 
   // Send mail to admin.
   Mailer.send({
@@ -187,7 +187,7 @@ export const postBookingUpdateMiddleware = async (ctx: oak.Context) => {
       .request.body.json();
 
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/booking-update/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/booking-update/email.json");
 
   const amount = price * numberOfDays;
 
@@ -243,7 +243,7 @@ export const postContactMiddleware = async (ctx: oak.Context) => {
       .request.body.json();
 
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/contact/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/contact/email.json");
 
   // Send mail to user.
   Mailer.send({
@@ -268,7 +268,7 @@ export const postContactMiddleware = async (ctx: oak.Context) => {
     messageHtml: adminMessageHtml,
     messagePlainText: adminMessagePlainText,
   } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/admin-contact/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/admin-contact/email.json");
 
   // Send mail to admin.
   Mailer.send({
@@ -319,7 +319,7 @@ export const postForgotPasswordMiddleware = async (ctx: oak.Context) => {
 
   const newPassword = Crypto.generatePassword();
   const { subject, messageHtml, messagePlainText } = await Helper
-    .convertJsonToObject<EmailContentType>("/email/forgot-password/email.json");
+    .convertJsonToObject<EmailContentType>("/emails/forgot-password/email.json");
 
   // Send mail to user.
   Mailer.send({
@@ -368,7 +368,7 @@ export const postForgotPasswordTokenMiddleware = async (ctx: oak.Context) => {
 
   const { subject, messageHtml, messagePlainText } = await Helper
     .convertJsonToObject<EmailContentType>(
-      "/email/forgot-password-token/email.json",
+      "/emails/forgot-password-token/email.json",
     );
 
   // Send mail to user.

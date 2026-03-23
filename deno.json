@@ -6,7 +6,7 @@
     "container": "docker desktop start && cd docker && make up-dev",
     "container-server": "cd docker && make up",
     "load": "deno cache deps/deps.ts",
-    "email-fmt": "deno -RWSE ./email/script/execute.ts && deno fmt",
+    "emails-fmt": "deno -RWSE ./emails/script/execute.ts && deno fmt",
     "lint-fmt": "deno lint && deno fmt --check",
     "test": "deno test --no-check -A ./**/*.test.ts"
   },
@@ -30,6 +30,6 @@
     "singleQuote": false,
     "proseWrap": "preserve",
     "include": [""],
-    "exclude": ["README.md", "./email/**/*.html", ".github/**/*.yml"]
+    "exclude": ["README.md", "./emails/**/*.html", ".github/**/*.yml"]
   }
 }
