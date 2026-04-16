@@ -48,4 +48,3 @@ jobs:
             git pull
             cd docker
             make rmi && make up
-            docker ps
